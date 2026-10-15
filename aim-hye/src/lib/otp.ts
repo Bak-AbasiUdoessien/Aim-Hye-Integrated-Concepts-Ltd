@@ -1,5 +1,9 @@
 import { prisma } from "./prisma";
 
+// Return the OTP to the browser instead of texting it: in local development, and on the public
+// portfolio demo (DEMO_MODE=true) where no SMS provider is connected. NEVER enable on a live business site.
+export const SHOW_OTP_ON_SCREEN = process.env.NODE_ENV !== "production" || process.env.DEMO_MODE === "true";
+
 export function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }

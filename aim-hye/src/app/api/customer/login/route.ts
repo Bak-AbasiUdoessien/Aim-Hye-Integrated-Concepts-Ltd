@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createCustomerToken, setCustomerCookie, clearCustomerCookie } from "@/lib/customerAuth";
-import { createOTP, verifyOTP, sendOTPSMS } from "@/lib/otp";
+import { createOTP, verifyOTP, sendOTPSMS, SHOW_OTP_ON_SCREEN } from "@/lib/otp";
 
 // Step 1: Send OTP to phone
 export async function POST(req: NextRequest) {
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     success: true,
     hasPin: !!customer.pin,
     hasBiometric: hasWebAuthn > 0,
-    devOtp: process.env.NODE_ENV !== "production" ? code : undefined,
+    devOtp: SHOW_OTP_ON_SCREEN ? code : undefined,
   });
 }
 

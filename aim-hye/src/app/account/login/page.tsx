@@ -11,6 +11,7 @@ export default function CustomerLoginPage() {
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [demoOtp, setDemoOtp] = useState(""); // set only when the server runs in demo mode
   const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -32,6 +33,7 @@ export default function CustomerLoginPage() {
     if (res.ok) {
       setHasPin(data.hasPin);
       setHasBiometric(data.hasBiometric);
+      if (data.devOtp) { setOtp(data.devOtp); setDemoOtp(data.devOtp); } // demo/dev: show the code on screen
       setStep("otp");
     } else {
       setError(data.error || "Failed to send OTP");
@@ -205,7 +207,12 @@ export default function CustomerLoginPage() {
                     className="w-full rounded-xl px-4 py-3 text-center text-xl tracking-widest focus:outline-none"
                     style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff" }}
                   />
-                  <p className="text-xs mt-2 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>OTP sent to {phone} · valid for 10 minutes</p>
+                  {demoOtp ? (
+                    // Demo mode: no SMS provider is connected, so the code is shown (and pre-filled) here instead
+                    <p className="text-xs mt-2 text-center" style={{ color: "#f5c842" }}>Demo mode: no SMS is sent. Your code is {demoOtp} (filled in for you).</p>
+                  ) : (
+                    <p className="text-xs mt-2 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>OTP sent to {phone} · valid for 10 minutes</p>
+                  )}
                 </div>
                 <button type="submit" disabled={loading || otp.length < 6}
                   className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-opacity disabled:opacity-50"

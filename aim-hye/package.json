@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate",
+    "db:migrate:turso": "node scripts/turso-migrate.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

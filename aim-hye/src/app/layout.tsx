@@ -55,6 +55,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`h-full ${bebasNeue.variable}`}>
       <body className="min-h-full antialiased">
+        {process.env.DEMO_MODE === "true" && (
+          // Portfolio demo: make it obvious nothing here is a real shop
+          <div className="w-full text-center text-xs font-semibold py-1.5 px-3" style={{ background: "#f5c842", color: "#111" }}>
+            Portfolio demo: test payments only (Paystack test mode), no real orders are delivered, and login codes are shown on screen.
+          </div>
+        )}
         {BRANCHES_JSON_LD.map((branch) => (
           <script
             key={branch.name}

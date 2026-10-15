@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createCustomerToken, setCustomerCookie } from "@/lib/customerAuth";
-import { createOTP, verifyOTP, sendOTPSMS } from "@/lib/otp";
+import { createOTP, verifyOTP, sendOTPSMS, SHOW_OTP_ON_SCREEN } from "@/lib/otp";
 
 export async function POST(req: NextRequest) {
   const { name, phone, email } = await req.json();
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     success: true,
     message: "OTP sent to your phone",
-    devOtp: process.env.NODE_ENV !== "production" ? code : undefined,
+    devOtp: SHOW_OTP_ON_SCREEN ? code : undefined,
   }, { status: 201 });
 }
 

@@ -1,12 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
-import path from "node:path";
+import { libsqlConfig } from "./libsqlConfig";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrisma() {
-  const dbPath = path.join(process.cwd(), "prisma", "dev.db").replace(/\\/g, "/");
-  const adapter = new PrismaLibSql({ url: `file:${dbPath}` });
+  const adapter = new PrismaLibSql(libsqlConfig()); // Turso when hosted, prisma/dev.db locally
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new PrismaClient({ adapter } as any);
 }

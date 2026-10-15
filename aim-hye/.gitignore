@@ -46,3 +46,7 @@ server.err
 
 # keep the env template
 !.env.example
+
+# local SQLite database: holds accounts and orders, so it must never be committed
+/prisma/dev.db
+/prisma/dev.db-journal

@@ -11,6 +11,7 @@ export default function CustomerRegisterPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [demoOtp, setDemoOtp] = useState(""); // set only when the server runs in demo mode
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,6 +28,7 @@ export default function CustomerRegisterPage() {
     const data = await res.json();
     setLoading(false);
     if (res.ok) {
+      if (data.devOtp) { setOtp(data.devOtp); setDemoOtp(data.devOtp); } // demo/dev: show the code on screen
       setStep("otp");
     } else {
       setError(data.error || "Registration failed");
@@ -154,7 +156,12 @@ export default function CustomerRegisterPage() {
                     className="w-full rounded-xl px-4 py-3 text-center text-xl tracking-widest focus:outline-none"
                     style={inputStyle}
                   />
-                  <p className="text-xs mt-2 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>OTP sent to {phone} · valid for 10 minutes</p>
+                  {demoOtp ? (
+                    // Demo mode: no SMS provider is connected, so the code is shown (and pre-filled) here instead
+                    <p className="text-xs mt-2 text-center" style={{ color: "#f5c842" }}>Demo mode: no SMS is sent. Your code is {demoOtp} (filled in for you).</p>
+                  ) : (
+                    <p className="text-xs mt-2 text-center" style={{ color: "rgba(255,255,255,0.3)" }}>OTP sent to {phone} · valid for 10 minutes</p>
+                  )}
                 </div>
                 <button type="submit" disabled={loading || otp.length < 6}
                   className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-opacity disabled:opacity-50"

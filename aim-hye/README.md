@@ -114,15 +114,15 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `/account/register` | Customer registration |
 | `/admin` | Admin dashboard — stock, orders, trucks, procurement |
 
-**Default admin login** (created by the seed):
-- Email: `admin@aimhye.com`
-- Password: `Admin1234!`
-
-> Change this immediately after first login.
+**Admin login** (created by the seed): `admin@aimhye.com`. The password is whatever you set in
+`SEED_ADMIN_PASSWORD` before running the seed. If it isn't set, the seed generates a random one and prints it once.
+Branch managers use `SEED_MANAGER_PASSWORD` the same way.
 
 ---
 
 ## Production Deployment
+
+**Free portfolio demo (Vercel + Turso):** see [DEPLOY.md](DEPLOY.md).
 
 For a production server (e.g. a VPS or cloud host):
 

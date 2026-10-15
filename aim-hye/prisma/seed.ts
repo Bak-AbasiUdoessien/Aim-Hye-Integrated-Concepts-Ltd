@@ -1,18 +1,28 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import bcrypt from "bcryptjs";
-import path from "node:path";
+import { randomBytes } from "node:crypto";
+import { libsqlConfig } from "../src/lib/libsqlConfig";
 
-const dbPath = path.join(process.cwd(), "prisma", "dev.db").replace(/\\/g, "/");
-const adapter = new PrismaLibSql({ url: `file:${dbPath}` });
+const adapter = new PrismaLibSql(libsqlConfig()); // Turso if TURSO_DATABASE_URL is set, else prisma/dev.db
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const prisma = new PrismaClient({ adapter } as any);
 
 const BRANCHES = ["IKOT_EKPENE", "ITAM"] as const;
 
+// Passwords come from the environment, never from the code: this repo is public, so any password
+// written here would be known to everyone. If none is given, a random one is generated and printed once.
+function seedPassword(envName: string): string {
+  const fromEnv = process.env[envName];
+  if (fromEnv) return fromEnv;
+  const generated = randomBytes(9).toString("base64url"); // 12 random characters
+  console.log(`${envName} not set: generated password ${generated}  (save it now, it is not stored anywhere else)`);
+  return generated;
+}
+
 async function main() {
   // Admin user (no branch — sees all)
-  const hashedPw = await bcrypt.hash("admin123", 10);
+  const hashedPw = await bcrypt.hash(seedPassword("SEED_ADMIN_PASSWORD"), 10);
   await prisma.adminUser.upsert({
     where: { email: "admin@aimhye.com" },
     update: {},
@@ -20,7 +30,7 @@ async function main() {
   });
 
   // Managers — one per branch
-  const managerPw = await bcrypt.hash("Manager1234!", 10);
+  const managerPw = await bcrypt.hash(seedPassword("SEED_MANAGER_PASSWORD"), 10);
   await prisma.adminUser.upsert({
     where: { email: "manager.ikotekpene@aimhye.com" },
     update: { branch: "IKOT_EKPENE" },
