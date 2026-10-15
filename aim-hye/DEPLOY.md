@@ -24,8 +24,9 @@ This puts a **demo** of the platform online for your CV. It is not the live busi
 
 ## 2. Create the tables and the demo data (from your PC)
 
-In PowerShell, inside the `aim-hye` folder:
+In PowerShell, inside the `aim-hye` folder. Run `git pull` first, so you have the latest scripts:
 ```powershell
+git pull
 npm install
 $env:TURSO_DATABASE_URL = "libsql://aim-hye-demo-<you>.turso.io"
 $env:TURSO_AUTH_TOKEN   = "<the token>"
@@ -34,6 +35,12 @@ $env:SEED_MANAGER_PASSWORD = "<choose a manager password>"
 npm run db:migrate:turso     # creates the tables (safe to run again: skips what's already done)
 npm run seed                 # adds the 116 products, 4 breweries and the staff accounts
 ```
+**If it fails:** the script prints the reason.
+- *Connection/401 errors:* the URL or token is wrong, or wasn't set in **this** PowerShell window. Settings made
+  with `$env:` disappear when the window closes.
+- *"already has N tables":* an earlier attempt stopped halfway. Run `npm run db:migrate:turso -- --reset` to
+  wipe it and start clean. **Only do this on the demo database:** it deletes everything in it.
+
 *Why from your PC:* this runs once. Doing it in the Vercel build would re-run it on every deploy.
 
 ## 3. Deploy on Vercel (about 5 minutes)
